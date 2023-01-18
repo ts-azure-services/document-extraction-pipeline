@@ -23,7 +23,7 @@ def init():
     #         "endpoint": os.environ['ENDPOINT'],
     #         }
     #
-    # global document_analysis_client
+    global document_analysis_client
     # document_analysis_client = DocumentAnalysisClient(
     #         endpoint=auth_dict['endpoint'],
     #         credential=AzureKeyCredential(auth_dict['key']),
