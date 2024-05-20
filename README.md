@@ -15,11 +15,14 @@ The key workflows are in three stages, which map to the folder structure:
 - `pipeline-sequential`. This is a demonstration of a sequential pipeline which first takes PDF files, breaks
   it into images, and then leverages [Azure Form Recognizer](https://azure.microsoft.com/en-us/products/form-recognizer/) and a pre-built model to perform
   OCR recognition to pull out text. A visual illustration of this process is shown below.
+  
   ![sequential-pipeline](./imgs/sequential-pipeline.jpg)
+  
 - `pipeline-parallel`. This is a demonstration of the sequential pipeline, but each step is parallelized. This
   allows for horizontal scaling and faster processing. To understand more about parallel processing in
   Azure ML, refer this [documentation](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-use-parallel-job-in-pipeline?tabs=cliv2).
   A visual illustration of this process is shown below.
+  
   ![parallel-pipeline](./imgs/parallel-pipeline.jpg)
 
 ### Notes on the initial setup
