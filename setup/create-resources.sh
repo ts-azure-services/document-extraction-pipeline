@@ -31,7 +31,7 @@ rg_create=$(az group create --name $resourcegroup --location $location)
 printf "Result of resource group create:\n $rg_create \n"
 
 ## Create Form recognizer resource
-printf "${grn}CREATING THE FORM RECOGNIZER RESOURCE...${end}\n"
+printf "${grn}creating the form recognizer resource...${end}\n"
 cognitiveServices=$(az cognitiveservices account create \
 	--kind CognitiveServices --location $location --name $cognitiveservice --sku S0\
 	-g $resourcegroup  --yes)
@@ -49,14 +49,37 @@ credentials=$(az ad sp create-for-rbac --name "sp$resourcegroup" \
 	--scopes /subscriptions/$sub_id/resourcegroups/$resourcegroup \
 	--role Contributor)
 #echo $credentials
+sleep 2
+
+printf "${grn}get the storage account name...${end}\n"
+storage_account=$(az storage account list -g $resourcegroup --query [].name -o tsv)
+sleep 2
+
+printf "${grn}get the storage account key...${end}\n"
+storage_account_key=$(az storage account keys list --account-name $storage_account -g $resourcegroup --query "[0].value" -o tsv)
+
+printf "${grn}get the storage connection string...${end}\n"
+storage_credentials=$(az storage account show-connection-string \
+  --name $storage_account \
+  -g $resourcegroup \
+  --query "connectionString" -o tsv
+)
 
 ## Retrieve key from cognitive services
-printf "${grn}RETRIEVE KEY FOR COGNITIVE SERVICES...${end}\n"
-cogKey=$(az cognitiveservices account keys list -g $resourcegroup --name $cognitiveservice --query "key1")
-#
-#
+printf "${grn}retrieve key for cognitive services...${end}\n"
+cogkey=$(az cognitiveservices account keys list -g $resourcegroup --name $cognitiveservice --query "key1" -o tsv)
+
+printf "${grn}create blob container for pdf files...${end}\n"
+blobContainerCreate=$(az storage container create --connection-string $storage_credentials --name "pdf-files")
+
+printf "${grn}create blob container for pdf images...${end}\n"
+blobContainerCreate=$(az storage container create --connection-string $storage_credentials --name "pdf-images")
+
+printf "${grn}create blob container for text files...${end}\n"
+blobContainerCreate=$(az storage container create --connection-string $storage_credentials --name "text-files")
+
+
 # Capture credentials for 'jq' parsing
-sleep 5
 credFile='cred.json'
 printf "$credentials" > $credFile
 clientID=$(cat $credFile | jq '.appId')
@@ -68,18 +91,30 @@ rm $credFile
 clientID=$(sed -e 's/^"//' -e 's/"$//' <<<"$clientID")
 clientSecret=$(sed -e 's/^"//' -e 's/"$//' <<<"$clientSecret")
 tenantID=$(sed -e 's/^"//' -e 's/"$//' <<<"$tenantID")
-cogkey=$(sed -e 's/^"//' -e 's/"$//' <<<"$cogKey")
 
 # Create variables file
 printf "${grn}Writing out service principal variables...${end}\n"
 env_variable_file='variables.env'
-printf "AZURE_CLIENT_ID=$clientID \n" > $env_variable_file
-printf "AZURE_CLIENT_SECRET=$clientSecret \n" >> $env_variable_file
-printf "AZURE_TENANT_ID=$tenantID \n" >> $env_variable_file
-printf "SUB_ID=$sub_id \n" >> $env_variable_file
-printf "RESOURCE_GROUP=$resourcegroup \n" >> $env_variable_file
-printf "WORKSPACE_NAME=$workspacename \n" >> $env_variable_file
-printf "LOCATION=$location \n" >> $env_variable_file
-printf "ENDPOINT=$endpoint \n" >> $env_variable_file
-printf "COG_RESOURCE=$cognitiveservice \n" >> $env_variable_file
-printf "COG_KEY=$cogkey \n" >> $env_variable_file
+printf "AZURE_CLIENT_ID=$clientID\n" > $env_variable_file
+printf "AZURE_CLIENT_SECRET=$clientSecret\n" >> $env_variable_file
+printf "AZURE_TENANT_ID=$tenantID\n" >> $env_variable_file
+printf "SUB_ID=$sub_id\n" >> $env_variable_file
+printf "RESOURCE_GROUP=$resourcegroup\n" >> $env_variable_file
+printf "WORKSPACE_NAME=$workspacename\n" >> $env_variable_file
+printf "STORAGE_ACCOUNT=$storage_account\n" >> $env_variable_file
+printf "STORAGE_CONN_STRING=$storage_credentials\n" >> $env_variable_file
+printf "STORAGE_ACCOUNT_KEY=$storage_account_key\n" >> $env_variable_file
+printf "BLOB_CONTAINER_PDF="pdf-files"\n" >> $env_variable_file
+printf "BLOB_CONTAINER_IMAGES="pdf-images"\n" >> $env_variable_file
+printf "BLOB_CONTAINER_TXT="text-files"\n" >> $env_variable_file
+printf "LOCATION=$location\n" >> $env_variable_file
+printf "ENDPOINT=$endpoint\n" >> $env_variable_file
+printf "COG_RESOURCE=$cognitiveservice\n" >> $env_variable_file
+printf "COG_KEY=$cogkey\n" >> $env_variable_file
+
+
+printf "${grn}conversion of default storage to ADLS Gen 2...${end}\n"
+az storage account hns-migration start --type validation -n $storage_account -g $resourcegroup
+sleep 5
+az storage account hns-migration start --type upgrade -n $storage_account -g $resourcegroup
+

@@ -1,34 +1,62 @@
-# For local dev environment
-install:
-	#conda create -n doc-pipeline python=3.8 -y; conda activate doc-pipeline
-	pip install python-dotenv
-	pip install azure-ai-ml
-	pip install azure-identity
-	pip install pandas
-	pip install flake8
-	pip install azure-ai-formrecognizer
+venv-setup:
+	rm -rf .venv
+	python3.11 -m venv .venv
+	.venv/bin/python -m pip install --upgrade pip
+	.venv/bin/python -m pip install -r ./requirements.txt
 
+sub-init:
+	echo "SUB_ID=<enter subscription name>" > sub.env
+
+# This not only sets up infra but converts the blob stores -> ADLS Gen 2
 infra:
 	./setup/create-resources.sh
 
-create_cluster:
-	python ./common/cluster.py
+create-cluster:
+	.venv/bin/python ./common/cluster.py
 
-create_env:
-	python ./common/env.py --name "pdf-split-env" --conda_file "./config/pdf-env.yml"
-	python ./common/env.py --name "form-rec-env" --conda_file "./config/form-rec-env.yml"
-	python ./common/env.py --name "parallel-env" --conda_file "./config/parallel-env.yml"
+create-env:
+	.venv/bin/python ./common/env.py --name "pdf-split-env" --conda_file "./config/pdf-env.yml"
+	.venv/bin/python ./common/env.py --name "form-rec-env" --conda_file "./config/form-rec-env.yml"
+	.venv/bin/python ./common/env.py --name "parallel-env" --conda_file "./config/parallel-env.yml"
 
-# Change default blob store to an ADLS by changing 'Hierarchial namespace'. Ensure above operation completes.
-# Upload sample pdf files from /data/ to folder `pdf-inputs`, under the default blob store
+pdf_blob=$(shell cat variables.env | grep "BLOB_CONTAINER_PDF" | cut -d "=" -f 2 | xargs)
+image_blob=$(shell cat variables.env | grep "BLOB_CONTAINER_IMAGES" | cut -d "=" -f 2 | xargs)
+text_blob=$(shell cat variables.env | grep "BLOB_CONTAINER_TXT" | cut -d "=" -f 2 | xargs)
+create-datastores:
+	.venv/bin/python ./common/datastore.py --container_name $(pdf_blob) \
+		--datastore_name "pdfinputfiles" \
+		--datastore_desc "PDF input files"
+	.venv/bin/python ./common/datastore.py --container_name $(image_blob) \
+		--datastore_name "pdfimages" \
+		--datastore_desc "PDF image files"
+	.venv/bin/python ./common/datastore.py --container_name $(text_blob) \
+		--datastore_name "textfiles" \
+		--datastore_desc "Final text files"
+
+# Upload files to blob container = pdf-files
+upload-files:
+	.venv/bin/python ./setup/upload_data.py
+
 
 ## Single step experiment
-single_job:
-	python ./single-step-job/main.py
+primary_datastore="azureml://datastores/pdfinputfiles/paths/"
+intermediate_datastore="azureml://datastores/pdfimages/paths/"
+output_datastore="azureml://datastores/textfiles/paths/"
+single-job:
+	.venv/bin/python ./single-step-job/main.py --input_datastore $(primary_datastore) \
+		--output_datastore $(intermediate_datastore)
 
 # Sequential pipeline: PDF -> images, and then form recognizer on those images
-seq_pipeline:
-	python ./pipeline-sequential/main.py
+seq-pipeline:
+	.venv/bin/python ./pipeline-sequential/main.py \
+		--input_datastore $(primary_datastore) \
+		--intermediate_datastore $(intermediate_datastore) \
+		--output_datastore $(output_datastore)
 
-par_pipeline:
-	python ./pipeline-parallel/main.py
+# Similar to sequential process, but in parallel
+# Note that before running this, you should insert the Form Recognizer key into the second component
+par-pipeline:
+	.venv/bin/python ./pipeline-parallel/main.py \
+		--input_datastore $(primary_datastore) \
+		--intermediate_datastore $(intermediate_datastore) \
+		--output_datastore $(output_datastore)

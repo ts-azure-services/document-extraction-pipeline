@@ -13,7 +13,7 @@ def get_file_list(pathway):
     return file_paths
 
 
-def main(source=None, output_path=None):
+def main(source, output_path):
     # Get list of pdf files
     pdf_list = get_file_list(source)
     print(f"Number of PDFs: {len(pdf_list)}")
@@ -26,13 +26,14 @@ def main(source=None, output_path=None):
         pdf_directory = pdf_directory.replace('.pdf', '')
 
         # Create the output path first
+        print(f"Output path: {output_path}")
         outputPath = output_path + '/' + pdf_directory
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
 
         images = convert_from_path(pdf_list[i])
         print(f'For {pdf_list[i]}, have created {len(images)} images')
-        for j, v in enumerate(images):
+        for j, _ in enumerate(images):
             images[j].save(outputPath + "/" + "A" + str(j) + '.png')
 
 

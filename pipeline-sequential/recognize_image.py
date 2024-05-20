@@ -1,6 +1,5 @@
-"""Script to recognize the image files from prior step"""
+## Script to recognize the image files from prior step
 import argparse
-import time
 import logging
 import os
 import os.path

@@ -1,7 +1,6 @@
 """Script to create images from PDF files"""
 import os
 import argparse
-import time
 from pdf2image import convert_from_path
 
 
@@ -25,6 +24,7 @@ def main(source=None, output_path=None):
 
         # Create the output path for the PDF output
         pdf_directory = pdf_list[i].split('/')[-1:][0]
+        pdf_directory = pdf_directory.replace('.pdf', '')
 
         # Create the output path first
         outputPath = output_path + '/' + str(pdf_directory)

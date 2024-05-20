@@ -1,4 +1,4 @@
-"""Script to provide the authentication object"""
+# Script to provide the authentication object
 import os
 from azure.ai.ml import MLClient
 from azure.identity import EnvironmentCredential # DefaultAzureCredential
@@ -17,6 +17,8 @@ def load_variables():
             "tenant_id": os.environ['AZURE_TENANT_ID'], #hardcoded with EnvironmentCredential
             "client_secret": os.environ['AZURE_CLIENT_SECRET'], #hardcoded with EnvironmentCredential
             "resource": os.environ['COG_RESOURCE'],
+            "storage_account": os.environ['STORAGE_ACCOUNT'],
+            "storage_account_key": os.environ['STORAGE_ACCOUNT_KEY'],
             "key": os.environ['COG_KEY'],
             "endpoint": os.environ['ENDPOINT'],
             "location": os.environ['LOCATION'],
