@@ -62,7 +62,7 @@ def get_ocr_from_image(file_path):
     # Create the output path for the recognizer output
     image_directory = file_path.split('/')[-2:][0]
     image_filename = file_path.split('/')[-2:][1]
-    image_filename = image_filename.replace('png', 'txt')
+    image_filename = image_filename.replace('pdf', 'txt')
 
     # Create outputPath with the directory
     outputPath = OUTPUT_PATH + '/' + str(image_directory)
