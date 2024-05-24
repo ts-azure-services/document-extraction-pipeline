@@ -7,10 +7,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 from common.authenticate import ml_client
 
-# # Paths for output to be persisted
-# blob_store_path="azureml://datastores/workspaceblobstore/paths/parallel-pipeline-pdf-images/"
-# ocr_store_path="azureml://datastores/workspaceblobstore/paths/parallel-pipeline-ocr-outputs/"
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
