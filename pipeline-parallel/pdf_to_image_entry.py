@@ -1,8 +1,7 @@
 """Script to create images from PDF files"""
 import os
 import argparse
-from pdf2image import convert_from_path
-from pathlib import Path
+from pypdf import PdfReader, PdfWriter
 
 
 def init():
@@ -26,12 +25,23 @@ def pdf_to_image(file_path):
     # Get filename and directory name
     file_name = file_path.split('/')[-1:][0]
     file_dir = file_name.replace('.pdf', '')
-    images = convert_from_path(file_path)
-    print(f'For {file_name}, have generated {len(images)} images')
+
     # Create the output path first
     outputPath = OUTPUT_PATH + '/' + str(file_dir) + '/'
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
-    # Save images to outputpath
-    for j, _ in enumerate(images):
-        images[j].save(outputPath + "page" + str(j) + '.png')
+
+    # Create the pypdf objects
+    reader = PdfReader(open(file_path, 'rb'))
+    num_of_pages = len(reader.pages)
+
+    counter = 0
+    for page_number in range(num_of_pages):
+        writer = PdfWriter()
+        page = reader.pages[page_number]
+        writer.add_page(page)
+        counter += 1
+        with open(outputPath + str(page_number) + '.pdf', 'wb') as output:
+            writer.write(output)
+
+    print(f"Wrote {counter} pages for {num_of_pages}.")
