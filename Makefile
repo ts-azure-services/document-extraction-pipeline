@@ -60,3 +60,12 @@ par-pipeline:
 		--input_datastore $(primary_datastore) \
 		--intermediate_datastore $(intermediate_datastore) \
 		--output_datastore $(output_datastore)
+
+# Commit local branch changes
+branch=$(shell git symbolic-ref --short HEAD)
+now=$(shell date '+%F_%H:%M:%S' )
+git-push:
+	git add . && git commit -m "Changes as of $(now)" && git push -u origin $(branch)
+
+git-pull:
+	git pull origin $(branch)python ./pipeline-parallel/main.py
