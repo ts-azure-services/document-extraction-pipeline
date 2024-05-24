@@ -16,5 +16,5 @@ except Exception:
     compute = AmlCompute(name=cpu_compute_target,
                          size="STANDARD_D2_V2",
                          min_instances=1,
-                         max_instances=4)
+                         max_instances=3)
     ml_client.compute.begin_create_or_update(compute)
