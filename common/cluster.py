@@ -1,18 +1,17 @@
-"""This is a one-time setup script."""
-# import sys
-# import os.path
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname( __file__ ), '../..')))
+# Script: one time script to create a cluster in Azure ML
+import logging
 from azure.ai.ml.entities import AmlCompute
 from authenticate import ml_client
 
+logging.basicConfig(level=logging.INFO)
 # Specify aml compute name.
 cpu_compute_target = "cpu-cluster"
 
 try:
     ml_client.compute.get(cpu_compute_target)
-    print("Compute target already created.")
+    logging.info("Compute target already created.")
 except Exception:
-    print("Creating a new cpu compute target...")
+    logging.info("Creating a new cpu compute target...")
     compute = AmlCompute(name=cpu_compute_target,
                          size="STANDARD_D2_V2",
                          min_instances=1,

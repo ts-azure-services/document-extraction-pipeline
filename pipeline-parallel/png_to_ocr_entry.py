@@ -1,5 +1,6 @@
-"""Script to create images from PDF files"""
+# Script to create images from PDF files
 import os
+import logging
 import argparse
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
@@ -32,13 +33,13 @@ def init():
             endpoint='https://westus.api.cognitive.microsoft.com/',
             credential=AzureKeyCredential('<enter the api key>'),
     )
-    print("Pass through init done.")
+    logging.info("Pass through init done.")
 
 
 def run(mini_batch):
     # mini_batch is a list of file paths for File Data
     for file_path in mini_batch:
-        print(f'Processing: {file_path}')
+        logging.info(f'Processing: {file_path}')
         get_ocr_from_image(file_path)
     return mini_batch
 

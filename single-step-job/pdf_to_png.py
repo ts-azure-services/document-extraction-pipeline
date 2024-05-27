@@ -1,5 +1,6 @@
-"""Script to create images from PDF files"""
+## Script to create images from PDF files
 import os
+import logging
 import argparse
 from pdf2image import convert_from_path
 
@@ -16,8 +17,8 @@ def get_file_list(pathway):
 def main(source, output_path):
     # Get list of pdf files
     pdf_list = get_file_list(source)
-    print(f"Number of PDFs: {len(pdf_list)}")
-    print(f"PDF List: {pdf_list}")
+    logging.info(f"Number of PDFs: {len(pdf_list)}")
+    logging.info(f"PDF List: {pdf_list}")
 
     # For each file, create discrete images
     for i, _ in enumerate(pdf_list):
@@ -26,18 +27,19 @@ def main(source, output_path):
         pdf_directory = pdf_directory.replace('.pdf', '')
 
         # Create the output path first
-        print(f"Output path: {output_path}")
+        logging.info(f"Output path: {output_path}")
         outputPath = output_path + '/' + pdf_directory
         if not os.path.exists(outputPath):
             os.makedirs(outputPath)
 
         images = convert_from_path(pdf_list[i])
-        print(f'For {pdf_list[i]}, have created {len(images)} images')
+        logging.info(f'For {pdf_list[i]}, have created {len(images)} images')
         for j, _ in enumerate(images):
             images[j].save(outputPath + "/" + "A" + str(j) + '.png')
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", help="Input files to process")
     parser.add_argument("-o", "--output", help="Output files to process")

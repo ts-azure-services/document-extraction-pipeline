@@ -1,5 +1,6 @@
-"""Script to create images from PDF files"""
+# Script to create images from PDF files
 import os
+import logging
 import argparse
 from pypdf import PdfReader, PdfWriter
 
@@ -10,13 +11,13 @@ def init():
     parser.add_argument("--job_output_path", type=str, default=0)
     args, _ = parser.parse_known_args()
     OUTPUT_PATH = args.job_output_path
-    print("Pass through init done.")
+    logging.info("Pass through init done.")
 
 
 def run(mini_batch):
     # mini_batch is a list of file paths for File Data
     for file_path in mini_batch:
-        print(f'Processing: {file_path}')
+        logging.info(f'Processing: {file_path}')
         pdf_to_image(file_path)
     return mini_batch
 
@@ -44,4 +45,4 @@ def pdf_to_image(file_path):
         with open(outputPath + str(page_number) + '.pdf', 'wb') as output:
             writer.write(output)
 
-    print(f"Wrote {counter} pages for {num_of_pages}.")
+    logging.info(f"Wrote {counter} pages for {num_of_pages}.")

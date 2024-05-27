@@ -1,6 +1,7 @@
 ## Script to recognize the image files from prior step
 import argparse
 import logging
+import logging
 import os
 import os.path
 import sys
@@ -35,7 +36,7 @@ def write_out_output(result=None, output_path=None, filename=None):
 
 def main(source=None, output_path=None):
     image_filepaths = get_file_list(source)
-    print(f"Image Directories: {image_filepaths}")
+    logging.info(f"Image Directories: {image_filepaths}")
 
     # For each file, create discrete images
     for i, _ in enumerate(image_filepaths):
@@ -56,6 +57,7 @@ def main(source=None, output_path=None):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input_data", help="Input files to process")
     parser.add_argument("-o", "--output_data", help="Output files to process")

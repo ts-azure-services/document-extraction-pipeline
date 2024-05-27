@@ -1,8 +1,10 @@
 import argparse
+import logging
 from azure.ai.ml.entities import Environment
 from authenticate import ml_client
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     #parser.add_argument("-i", "--image", default="mcr.microsoft.com/azureml/openmpi3.1.2-ubuntu18.04", type=str)
     parser.add_argument("-i", "--image", default="mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04", type=str)
@@ -22,4 +24,4 @@ if __name__ == "__main__":
                 )
         ml_client.environments.create_or_update(env_docker_conda)
     except Exception as e:
-        print(f"Error: {e}")
+        logging.info(f"Error: {e}")

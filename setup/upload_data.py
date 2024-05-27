@@ -1,4 +1,5 @@
 import os
+import logging
 from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient
 
@@ -34,7 +35,7 @@ def upload_blob_file(blob_service_client: BlobServiceClient, container_name: str
 
 
 if __name__ == "__main__":
-
+    logging.basicConfig(level=logging.DEBUG)
     load_dotenv('./variables.env')
     connection_string = os.environ["STORAGE_CONN_STRING"]
     container_name = os.environ["BLOB_CONTAINER_PDF"]
@@ -43,11 +44,11 @@ if __name__ == "__main__":
 
     # Delete existing blobs
     delete_blob_files(blob_service_client, container_name)
-    print("Deleted existing files...")
+    logging.info("Deleted existing files...")
 
     # Upload new files
     data_file_list = get_data_files()
 
     for file in data_file_list:
         upload_blob_file(blob_service_client, container_name, file)
-        print(f"Uploaded file: {file}")
+        logging.info(f"Uploaded file: {file}")

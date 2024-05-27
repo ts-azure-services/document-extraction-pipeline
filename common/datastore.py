@@ -1,9 +1,11 @@
 import argparse
+import logging
 from azure.ai.ml.entities import AzureBlobDatastore
 from azure.ai.ml.entities import AccountKeyConfiguration
 from authenticate import ml_client, auth_var
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument("--container_name", type=str)
     parser.add_argument("--datastore_name", type=str)
@@ -22,4 +24,4 @@ if __name__ == "__main__":
 
         ml_client.create_or_update(store)
     except Exception as e:
-        print(f"Error: {e}")
+        logging.info(f"Error: {e}")
