@@ -41,13 +41,13 @@ number_of_pdfs=6
 create-pdfs:
 	rm -rf ./data
 	mkdir -p ./data
-	.venv/bin/python ./setup/create_pdfs.py --input_file=$(input_file) --number_of_pdfs=$(number_of_pdfs)
+	.venv/bin/python ./local-test-operations/create_pdfs.py --input_file=$(input_file) --number_of_pdfs=$(number_of_pdfs)
 
 
 # Upload files to blob container = pdf-files
 # Note that if there is a folder structure inherent in the data folder ahead of time, it will just upload discrete files
 upload-files:
-	.venv/bin/python ./setup/upload_data.py
+	.venv/bin/python ./local-test-operations/upload_data.py
 
 
 ## Single step experiment

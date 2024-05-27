@@ -1,7 +1,9 @@
 import os
+import time
 import logging
 from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient
+from delete_blobs import delete_blob_files
 
 def get_data_files(start_path="./data"):
     """Get all generated data files"""
@@ -12,15 +14,30 @@ def get_data_files(start_path="./data"):
     return filepath_list
 
 
-def delete_blob_files(blob_service_client: BlobServiceClient, container_name: str):
-    """Delete existing files"""
-    # Get the container client
-    container_client = blob_service_client.get_container_client(container=container_name)
-
-    # Clear out existing blobs in the container
-    for blob in container_client.list_blobs():
-        container_client.delete_blob(blob.name)
-
+# def delete_blob_files(blob_service_client: BlobServiceClient, container_name: str):
+#     """Delete existing files"""
+#     # Get the container client
+#     container_client = blob_service_client.get_container_client(container=container_name)
+#
+#     # First delete individual files recursively
+#     for blob in container_client.list_blobs():
+#         if ".pdf" in blob.name or ".txt" in blob.name:
+#             container_client.delete_blob(blob.name)
+#
+#     time.sleep(2)
+#
+#     # Once folders have no files, then you can delete folders
+#     # However, folders within folders are classified as non-empty
+#     # So first list out all folder structures, and from the lowest level down, delete them
+#     folder_lists = []
+#     for blob in container_client.list_blobs():
+#         folder_lists.append(blob.name)
+#
+#     # Delete in reverse
+#     folder_lists.reverse()
+#     for blob in folder_lists:
+#         container_client.delete_blob(blob)
+#         time.sleep(0.5)
 
 def upload_blob_file(blob_service_client: BlobServiceClient, container_name: str, local_file_path: str):
     """Upload blob files"""

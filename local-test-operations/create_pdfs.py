@@ -11,7 +11,7 @@ def create_random_pdf(input_pdf, num_of_pdfs):
     for _ in range(num_of_pdfs):
         writer = PdfWriter()
         filename = f"{uuid.uuid4()}.pdf"
-        num_pages = random.randint(100,250)
+        num_pages = random.randint(1,5)
         for _ in range(num_pages):
             page_number = random.randint(0, len(reader.pages) - 1)
             page = reader.pages[page_number]
