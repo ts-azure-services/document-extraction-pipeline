@@ -34,7 +34,7 @@ if __name__ == "__main__":
             --job_output_path ${{outputs.job_output_path}}",
         environment="blob-env:1",
         compute="cpu-cluster",
-        is_deterministic=True,
+        is_deterministic=False,
     )
 
     # Split PDFs into page-level PDFs
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             program_arguments="--job_output_path ${{outputs.job_output_path}}",
             environment="parallel-env:1",
         ),
-        is_deterministic=True,
+        is_deterministic=False,
     )
 
     # Extract text from PDFs
@@ -80,7 +80,7 @@ if __name__ == "__main__":
             program_arguments="--job_output_path ${{outputs.job_output_path}}",
             environment="form-rec-env:1",
         ),
-        is_deterministic=True,
+        is_deterministic=False,
     )
 
     # Consolidate all the discrete text files into one text file
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             --job_output_path ${{outputs.job_output_path}}",
         environment="blob-env:1",
         compute="cpu-cluster",
-        is_deterministic=True,
+        is_deterministic=False,
     )
 
     # DEFINE THE PIPELINE
