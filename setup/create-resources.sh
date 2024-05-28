@@ -78,6 +78,8 @@ blobContainerCreate=$(az storage container create --connection-string $storage_c
 printf "${grn}create blob container for text files...${end}\n"
 blobContainerCreate=$(az storage container create --connection-string $storage_credentials --name "text-files")
 
+printf "${grn}create blob container for text files final...${end}\n"
+blobContainerCreate=$(az storage container create --connection-string $storage_credentials --name "text-files-final")
 
 # Capture credentials for 'jq' parsing
 credFile='cred.json'
@@ -107,6 +109,7 @@ printf "STORAGE_ACCOUNT_KEY=$storage_account_key\n" >> $env_variable_file
 printf "BLOB_CONTAINER_PDF="pdf-files"\n" >> $env_variable_file
 printf "BLOB_CONTAINER_IMAGES="pdf-images"\n" >> $env_variable_file
 printf "BLOB_CONTAINER_TXT="text-files"\n" >> $env_variable_file
+printf "BLOB_CONTAINER_FINAL="text-files-final"\n" >> $env_variable_file
 printf "LOCATION=$location\n" >> $env_variable_file
 printf "ENDPOINT=$endpoint\n" >> $env_variable_file
 printf "COG_RESOURCE=$cognitiveservice\n" >> $env_variable_file

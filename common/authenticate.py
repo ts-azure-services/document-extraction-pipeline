@@ -18,8 +18,13 @@ def load_variables():
             "client_secret": os.environ['AZURE_CLIENT_SECRET'], #hardcoded with EnvironmentCredential
             "resource": os.environ['COG_RESOURCE'],
             "storage_account": os.environ['STORAGE_ACCOUNT'],
+            "storage_connection_key": os.environ['STORAGE_CONN_STRING'],
             "storage_account_key": os.environ['STORAGE_ACCOUNT_KEY'],
             "key": os.environ['COG_KEY'],
+            "blob_container_pdf":os.environ['BLOB_CONTAINER_PDF'],
+            "blob_container_images":os.environ['BLOB_CONTAINER_IMAGES'],
+            "blob_container_txt":os.environ['BLOB_CONTAINER_TXT'],
+            "blob_container_final":os.environ['BLOB_CONTAINER_FINAL'],
             "endpoint": os.environ['ENDPOINT'],
             "location": os.environ['LOCATION'],
             }

@@ -16,7 +16,7 @@ def delete_blob_files(blob_service_client: BlobServiceClient, container_name: st
 
     time.sleep(2)
 
-    # Once folders have no files, then you can delete folders
+    # Once folders have no files, you can delete folders
     # However, folders within folders are classified as non-empty
     # So first list out all folder structures, and from the lowest level down, delete them
     folder_lists = []
@@ -35,7 +35,9 @@ if __name__ == "__main__":
 
     load_dotenv('./variables.env')
     connection_string = os.environ["STORAGE_CONN_STRING"]
-    container_name = os.environ["BLOB_CONTAINER_PDF"]
+
+    # Container to delete
+    container_name = os.environ["BLOB_CONTAINER_IMAGES"]
 
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 

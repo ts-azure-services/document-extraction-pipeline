@@ -1,5 +1,6 @@
 # Script to sort and organize discrete text files into a single text file
 import os
+import argparse
 import re
 import logging
 from collections import defaultdict
@@ -69,20 +70,28 @@ def consolidate_text_files(blob_service_client: BlobServiceClient,
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     load_dotenv('./variables.env')
-    connection_string = os.environ["STORAGE_CONN_STRING"]
-    container_name = os.environ["BLOB_CONTAINER_TXT"]
-    final_container_name = os.environ["BLOB_CONTAINER_TXT_FINAL"]
 
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input_path", help="Container with page-level text files")
+    parser.add_argument("--job_output_path", help="Container with final text file outputs")
+    args = parser.parse_args()
+
+    blob_service_client = BlobServiceClient.from_connection_string(os.environ["STORAGE_CONN_STRING"])
+    container_name = os.environ["BLOB_CONTAINER_TXT"]
+    final_container_name = os.environ["BLOB_CONTAINER_FINAL"]
 
     # Get the mapping of all files and their hierarchy
+    # Have to use the actual blob names, vs. the datastore paths
+    # mapping = get_txt_file_hierarchy(blob_service_client, args.input_path)
     mapping = get_txt_file_hierarchy(blob_service_client, container_name)
     logging.info(pp(mapping))
 
     consolidate_text_files(blob_service_client, 
+                           # container_name=args.input_path,
+                           # final_container_name=args.output_path,
                            container_name=container_name,
                            final_container_name=final_container_name,
                            mapping=mapping
