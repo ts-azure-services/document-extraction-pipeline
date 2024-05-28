@@ -69,7 +69,7 @@ def consolidate_text_files(blob_service_client: BlobServiceClient,
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
 
     load_dotenv('./variables.env')
     connection_string = os.environ["STORAGE_CONN_STRING"]

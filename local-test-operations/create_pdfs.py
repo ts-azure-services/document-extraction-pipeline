@@ -21,8 +21,6 @@ def create_random_pdf(input_pdf, num_of_pdfs):
             writer.write(output)
         logging.info(f"Wrote out {filename} with {num_pages} pages.")
 
-def main(input, number_of_pdfs):
-    create_random_pdf(input, number_of_pdfs)
 
 
 if __name__ == "__main__":
@@ -33,4 +31,4 @@ if __name__ == "__main__":
     parser.add_argument('--number_of_pdfs', type=str, required=True, help='The number of files to create')
     args = parser.parse_args()
 
-    main(args.input_file, int(args.number_of_pdfs))
+    create_random_pdf(args.input_file, int(args.number_of_pdfs))

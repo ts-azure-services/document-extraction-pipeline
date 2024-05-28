@@ -37,7 +37,7 @@ create-datastores:
 ## If running in the cloud shell, upload the azure-ai-studio pdf
 # Then, use the script below to generate several PDFs out of this base PDF and upload to blob
 input_file="./azure-ai-studio.pdf"
-number_of_pdfs=6
+number_of_pdfs=10
 create-pdfs:
 	rm -rf ./data
 	mkdir -p ./data
