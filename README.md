@@ -49,4 +49,5 @@ The key workflows are in three stages, which map to the folder structure:
 - Having multiple Form Recognizer resources vs. a single one.
 - No specific exception handling for the api calls to the Form Recognizer resource.
 - Ideally, would want some automated trigger in place to trigger the pipeline based upon modification or adding a blob to the source container. Be sure to leverage Azure ML SDK v2 to do this through batch endpoints, and some kind of a trigger mechanism.
+- Parallelize the first component around deleting intermediate files and the last component around consolidating text files.
 - Some automated alert or email to identify when the batch is complete.
